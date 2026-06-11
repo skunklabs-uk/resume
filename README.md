@@ -11,17 +11,25 @@ cv/
   Ignazio.Ingenito.pdf
 
 profile/
-  .gitkeep
+  positioning.md
+  target-roles.md
   sources/
     cv-analysis/
       Ignazio.Ingenito.1.pdf
       Ignazio.Ingenito.2.pdf
 
 job-search/
-  .gitkeep
+  market-observatory-spec.md
+  linkedin-query-seeds.md
+  italy-market-sources.md
+  scoring-model.md
 
 automations/
-  .gitkeep
+  n8n-workflows.md
+
+docs/
+  plans/
+    2026-06-11-job-search-observatory-plan.md
 ```
 
 ## Responsabilita Delle Cartelle
@@ -29,17 +37,19 @@ automations/
 `cv/` contiene solo il CV corrente. Il file principale modificabile e
 `cv/Ignazio.Ingenito.docx`; il PDF principale e `cv/Ignazio.Ingenito.pdf`.
 
-`profile/` conterra il posizionamento professionale: sintesi, narrativa,
+`profile/` contiene il posizionamento professionale: sintesi, narrativa,
 target role, punti di forza, criteri di candidatura e materiali riusabili per
 cover letter o messaggi. I materiali storici usati per analisi, ma non correnti,
 stanno in `profile/sources/`.
 
-`job-search/` conterra la strategia di ricerca lavoro: osservatorio di mercato,
+`job-search/` contiene la strategia di ricerca lavoro: osservatorio di mercato,
 query LinkedIn/Indeed, fonti italiane, role family, scoring model e note sulle
 candidature.
 
-`automations/` conterra documentazione e riferimenti alle automazioni che
+`automations/` contiene documentazione e riferimenti alle automazioni che
 supportano la ricerca lavoro.
+
+`docs/plans/` contiene piani operativi versionati per modifiche multi-step.
 
 ## Separazione Da `n8n-workflows`
 
@@ -59,7 +69,7 @@ In pratica:
 - i workflow n8n possono implementare o automatizzare specifiche definite qui,
   ma non devono diventare il posto dove ragionare sul posizionamento personale.
 
-## Prossimi Documenti Previsti
+## Documenti Principali
 
 - `profile/positioning.md`
 - `profile/target-roles.md`
