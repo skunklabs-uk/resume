@@ -1,0 +1,27 @@
+# Local tool state
+.gitnexus/
+.claude/
+.codex/
+
+# Python/cache artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Office temporary files
+~$*
+*.tmp
+
+# Generated/local outputs
+output/
+tmp/
+*.log
