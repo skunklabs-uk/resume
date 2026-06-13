@@ -43,6 +43,7 @@ Regola di confine:
 - Preferire sub-workflow o workflow richiamati quando la stessa logica si ripete tra inbox, feed pubblici e fonti italiane.
 - Mantenere la logica di business nei documenti di questo repo e nei mapping configurabili, non in espressioni sparse o hardcoded.
 - Trattare la persistenza operativa come dettaglio tecnico del repo `n8n-workflows`, non come parte della strategia.
+- Per gli alert email, conservare la history operativa delle query in una Data Table n8n ispezionabile e resettabile, non in stato volatile nascosto nel workflow.
 
 ## Input
 
@@ -67,6 +68,7 @@ Input operativi attesi nei workflow:
 - coda prioritaria per candidatura o revisione;
 - report giornalieri o settimanali per role family;
 - lista di query da tenere, dividere, restringere o ritirare;
+- history per query/ciclo utile a calcolare raccomandazioni su una finestra rolling di 5 cicli;
 - log di errori, warning e fonti non parseabili;
 - backlog di record per manual review;
 - export o payload pronti per consumo esterno, se necessario.
