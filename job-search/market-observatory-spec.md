@@ -8,6 +8,8 @@ L'osservatorio di mercato deve aiutare Ignazio a capire:
 - quali segnali di mercato sono ricorrenti e quali invece sono rumore;
 - come aggiornare il posizionamento e le query senza inseguire un singolo annuncio.
 
+L'asse principale di lettura non deve essere il titolo in se, ma il problema professionale che il ruolo descrive davvero. I titoli servono soprattutto come sensori di raccolta; la decisione strategica deve avvenire a livello di narrativa.
+
 Il sistema non deve produrre "verita" sul mercato, ma una lettura operativa, ripetibile e spiegabile. Ogni valutazione deve separare:
 
 - fatto osservato nell'annuncio o nella fonte;
@@ -74,9 +76,14 @@ Ogni annuncio o segnale osservato deve essere rappresentato con un record normal
 - `url`: link canonico all'annuncio o alla fonte.
 - `description`: testo utile dell'annuncio o estratto normalizzato.
 - `roleFamily`: famiglia di ruolo assegnata secondo `profile/target-roles.md`.
+- `primaryNarrative`: narrativa principale assegnata al record.
+- `secondaryNarrative`: narrativa secondaria opzionale, se presente.
+- `narrativeConfidence`: livello di fiducia della classificazione narrativa.
 - `outOfScope`: booleano che indica se il record e stato escluso prima della classificazione perche fuori perimetro.
 - `exclusionReason`: motivo sintetico dell'esclusione, per esempio `commercial_role`, `admin_role`, `content_role`, `junior_entry_level`, `location_mismatch`, `non_technical_operations`, `low_signal_public_feed`.
 - Per calibrazione corrente, usare anche `non_permanent_engagement` per freelance/contractor/talent network/marketplace incompatibili con una ricerca permanent, e `standalone_ic_engineering` per Product Engineer, Full-stack Engineer o Software Engineer senza ownership ampia.
+- Usare `uk_requires_sponsorship` per ruoli localizzati in UK/Regno Unito quando non c'e un'indicazione esplicita di visa sponsorship disponibile.
+- Usare `low_signal_public_feed` per recommended jobs LinkedIn senza titolo target e senza famiglia ruolo target riconoscibile.
 - `exclusionSignals`: segnali osservati che giustificano l'esclusione.
 - `seniority`: seniority osservata o inferita, con etichetta coerente e prudente.
 - `companySizeAssumption`: stima o ipotesi sulla dimensione aziendale solo se supportata da segnali pubblici; altrimenti vuoto.
@@ -94,8 +101,19 @@ Regole del record:
 - i campi devono contenere solo informazioni osservabili o inferenze dichiarate;
 - ogni inferenza deve essere distinguibile nel testo dell'`explanation`;
 - `companySizeAssumption` non e un fatto, ma un'ipotesi da verificare;
+- `primaryNarrative` e `secondaryNarrative` devono essere basate su segnali leggibili nel record, non sul titolo da solo;
 - se `outOfScope` e `true`, `roleFamily` deve restare vuoto o `out_of_scope`: il sistema non deve forzare una famiglia target su un record escluso;
 - se mancano dati, il campo deve restare vuoto o marcato come unknown, non riempito a intuito.
+
+Narrative correnti:
+
+- `Platform Modernization & Reliability`
+- `Technical Leadership for Delivery, Scale and Execution`
+- `Applied AI / Document Intelligence in Production`
+
+Filtro trasversale:
+
+- `Complex / Regulated Contexts`
 
 ## Pipeline Logica
 1. Ingestione.
@@ -122,19 +140,22 @@ Regole del record:
 4. Classificazione.
    Assegnare `roleFamily`, `seniority` e `remotePolicy` con regole semplici e coerenti con `profile/target-roles.md`.
 
-5. Lettura dei segnali.
+5. Lettura narrativa.
+   Assegnare `primaryNarrative`, eventuale `secondaryNarrative` e `narrativeConfidence`. Un titolo forte senza narrativa primaria coerente deve essere abbassato.
+
+6. Lettura dei segnali.
    Separare in tre gruppi:
    - domanda di mercato;
    - fit con il profilo;
    - vantaggio competitivo personale.
 
-6. Valutazione.
+7. Valutazione.
    Produrre `recommendedAction` e `explanation` usando regole esplicite, non intuizioni non documentate.
 
-7. Feedback loop.
+8. Feedback loop.
    Aggiornare il sistema con esito di candidature, risposte dei recruiter e qualita delle query.
 
-8. Manutenzione delle query.
+9. Manutenzione delle query.
    Usare gli esiti per mantenere, dividere, restringere o ritirare query e alert.
 
 ## Output Attesi
@@ -142,6 +163,7 @@ L'osservatorio deve produrre output semplici da leggere e facili da usare in una
 
 - una coda di annunci normalizzati e classificati;
 - una vista per role family con segnalazioni ricorrenti;
+- una vista per narrativa primaria con segnali ricorrenti;
 - una lista di annunci ad alta priorita per candidatura o revisione;
 - una lista di alert da monitorare ma non ancora usare;
 - una lista di query da tenere, modificare o ritirare;
@@ -152,6 +174,7 @@ Ogni output deve conservare il riferimento alla fonte originale e alla spiegazio
 Regole di compattezza:
 
 - il report operativo deve privilegiare `topMatches`, sintesi per role family e sintesi degli esclusi;
+- nel digest umano mostrare prima la narrativa rilevata e poi il titolo del ruolo;
 - `description` completa deve restare disponibile nel record grezzo o nel dettaglio, ma non va inclusa di default nei webhook o nei digest umani;
 - per i record esclusi includere solo conteggi per `exclusionReason`, esempi di titolo/fonte e query da restringere;
 - i record sotto soglia ma non esclusi possono essere inclusi come lista breve, senza HTML e senza descrizione completa;
@@ -163,6 +186,7 @@ La calibrazione deve essere lenta, esplicita e basata su evidenza osservata, non
 - Se una query produce troppi falsi positivi, restringerla prima di aggiungerne altre.
 - Se una query produce annunci buoni ma troppo pochi, allargarla con cautela o splittarla per variante.
 - Se una role family mostra fit alto ma volume basso, tenerla separata invece di fonderla con una famiglia vicina.
+- Se una query ha molto volume ma bassa coerenza narrativa, non allargarla: osservarla e poi restringerla o splittarla.
 - Se salary guide e annunci pubblici divergono, dare priorita agli annunci e trattare la salary guide come segnale secondario.
 - Se il feedback manuale smentisce ripetutamente l'interpretazione automatica, correggere il mapping o la regola, non il singolo record.
 
@@ -172,6 +196,25 @@ Regola di calibrazione pratica:
 - split: quando una query o una family mescola due mercati diversi;
 - narrow: quando il rumore supera il valore informativo;
 - retire: quando una query non produce piu segnali utili o genera quasi solo falsi positivi.
+
+Regola di osservazione:
+
+- prima di decidere `keep / split / narrow / retire` su una query, accumulare idealmente `5 cicli` di osservazione;
+- la valutazione va fatta prima sul `singolo alert/query`, poi eventualmente sul gruppo canonico.
+
+Regola di eligibility geografica:
+
+- i ruoli in UK/Regno Unito sono fuori perimetro operativo se non indicano esplicitamente sponsorship o supporto per visto;
+- segnali come Londra, London, Greater London, Grande Londra, United Kingdom o Regno Unito attivano il gate;
+- salary o titolo forte non devono superare questo gate; un ruolo UK senza sponsorship resta `ignore` anche se ha buon fit narrativo;
+- se la sponsorship e esplicita, il ruolo puo rientrare nello scoring normale ma va comunque trattato come `inspect manually` se i dati sono poveri.
+
+Regola per LinkedIn recommended jobs:
+
+- le email di suggested/recommended jobs possono alimentare il flusso solo come fonte opportunistica;
+- non sono saved-search alert e non devono alimentare `queryHealth`;
+- suggerimenti senza titolo target e senza famiglia ruolo target riconoscibile vanno esclusi con `low_signal_public_feed`;
+- suggerimenti con titolo target o famiglia ruolo target riconoscibile possono entrare nello scoring normale, restando `inspect manually` quando sono data-poor.
 
 ## Rischi E Limiti
 
@@ -187,7 +230,7 @@ Regola di calibrazione pratica:
 
 ## Open Questions
 
-- Quale geografia deve avere priorita reale: Italia, Svizzera, UK o remoto internazionale.
+- Quale priorita assegnare a Italia, Svizzera e remoto internazionale rispetto a UK con sponsorship esplicita.
 - Quanto peso assegnare ai ruoli in italiano rispetto a quelli in inglese.
 - Quale frequenza di osservazione e utile: giornaliera, settimanale o mista.
 - Quali fonti italiane devono entrare per prime nel perimetro operativo.

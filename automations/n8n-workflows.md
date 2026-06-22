@@ -87,6 +87,12 @@ Regole per report e webhook:
   link, marcare il record come `dataPoor`;
 - i record `dataPoor` con titolo target forte vanno a `inspect manually`, non a
   `apply`, e l'arricchimento deve usare solo fonti pubbliche non loggate;
+- i ruoli in UK/Regno Unito senza sponsorship o supporto visto esplicito vanno
+  esclusi prima dello scoring con `exclusionReason: uk_requires_sponsorship`;
+- le email LinkedIn di recommended jobs possono entrare nello stesso parser, ma
+  i suggerimenti senza titolo target o famiglia ruolo target riconoscibile vanno
+  esclusi con `exclusionReason: low_signal_public_feed` e non devono alimentare
+  `queryHealth`;
 - mantenere `rawRecords` o descrizioni complete solo in storage/debug tecnico, non nel digest principale;
 - `matchCount` deve contare soltanto i record presenti in `topMatches`.
 

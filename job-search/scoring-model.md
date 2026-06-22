@@ -1,5 +1,35 @@
 # Scoring Model
 
+## Narrative Layer
+Prima dei punteggi tradizionali, il sistema deve leggere ogni record con un layer di narrative professionali. Questo layer non sostituisce le query di raccolta, ma guida interpretazione, reporting e manutenzione degli alert.
+
+Narrative decise:
+
+- `Platform Modernization & Reliability` -> primaria
+- `Technical Leadership for Delivery, Scale and Execution` -> primaria
+- `Applied AI / Document Intelligence in Production` -> secondaria
+- `Complex / Regulated Contexts` -> filtro trasversale
+
+Regole:
+
+- ogni job deve avere una `primaryNarrative` quando esistono segnali sufficienti;
+- puo avere una `secondaryNarrative` opzionale, ma mai piu di una;
+- `Complex / Regulated Contexts` non e una narrativa autonoma: aumenta il fit quando rafforza una narrativa primaria o secondaria;
+- se un titolo forte non entra in nessuna narrativa primaria, il record va abbassato nettamente anche se il titolo sembra prestigioso;
+- il digest umano deve mostrare prima la narrativa rilevata e poi il titolo del ruolo.
+
+Segnali minimi per narrativa:
+
+- `Platform Modernization & Reliability`: modernization, migration, platform engineering, cloud transformation, Kubernetes, AWS, DevOps, SRE, IaC, observability, reliability, incident reduction, developer platform;
+- `Technical Leadership for Delivery, Scale and Execution`: ownership di team, delivery, execution, architecture governance, roadmap, hiring, operating model, scaling team o processi tecnici;
+- `Applied AI / Document Intelligence in Production`: AI solo quando compaiono segnali di produzione o industrializzazione, per esempio deployment, operationalization, workflow automation, OCR, document processing, document intelligence, production AI platform, governance o integration.
+
+Segnali del filtro trasversale `Complex / Regulated Contexts`:
+
+- banking, fintech, insurance, private banking, payments;
+- auditability, compliance, security, risk, enterprise governance;
+- integrazione con sistemi legacy critici o contesti multi-stakeholder ad alta complessita.
+
 ## Principi
 Questo modello serve a classificare annunci e segnali in modo operativo, non a produrre una verita sul mercato.
 
@@ -120,13 +150,15 @@ Questo score misura la compatibilita tra il ruolo osservato e il profilo profess
 
 Formula iniziale consigliata:
 
-- `roleFamilyAlignment` = 35%
+- `primaryNarrativeAlignment` = 30%
+- `roleFamilyAlignment` = 20%
 - `responsibilityMatch` = 25%
 - `domainMatch` = 20%
-- `contextMatch` = 20%
+- `contextMatch` = 5%
 
 Definizione dei componenti:
 
+- `primaryNarrativeAlignment`: corrispondenza con una delle narrative primarie decise e con i relativi segnali osservabili.
 - `roleFamilyAlignment`: corrispondenza con una delle role family target o con un alias chiaramente vicino.
 - `responsibilityMatch`: presenza di ownership su architettura, roadmap, delivery, team, piattaforme o decisioni tecniche reali.
 - `domainMatch`: coerenza con cloud, platform, DevOps, AI/document intelligence, banking/fintech, startup o trasformazione tecnica.
@@ -134,13 +166,16 @@ Definizione dei componenti:
 
 Regole:
 
+- la narrativa primaria conta piu del titolo;
 - il titolo da solo non basta: conta il perimetro reale descritto nell'annuncio;
 - ruoli solo esecutivi o solo amministrativi non devono ricevere punteggi alti;
 - una buona aderenza tecnica senza ownership di ruolo non basta per uno score alto;
 - un contesto molto distante dal posizionamento target deve abbassare il punteggio anche se il titolo sembra vicino.
+- un titolo executive senza narrativa primaria credibile non deve ricevere punteggio alto.
 
 Segnali che alzano il punteggio:
 
+- chiara appartenenza a una delle narrative primarie;
 - ownership tecnica o di piattaforma;
 - leadership di team o di delivery;
 - contesto regolato, complesso o cross-funzione dove il profilo ha esperienza utile;
@@ -148,6 +183,7 @@ Segnali che alzano il punteggio:
 
 Segnali che lo abbassano:
 
+- assenza di narrativa primaria coerente;
 - ruolo da senior developer puro;
 - coordinamento senza decisione tecnica;
 - attivita solo PMO, recruiting, ticketing o vendor management;
@@ -237,6 +273,38 @@ Decision rule:
 
 This fallback is a triage rule, not a boost to `apply`.
 
+## Geographic Eligibility Gate
+
+I ruoli in UK/Regno Unito richiedono un gate dedicato perche, fuori dall'UE,
+possono richiedere visto o sponsorship. Il sistema deve trattarli come fuori
+perimetro operativo quando non c'e un'indicazione esplicita di sponsorship
+disponibile.
+
+Regola:
+
+- UK/Regno Unito/Londra senza visa sponsorship esplicita -> `ignore`;
+- UK con `visa sponsorship`, `skilled worker visa`, `sponsorship available` o segnale equivalente -> scoring normale;
+- titolo forte, salary alta o fit narrativo non devono superare il gate se la sponsorship manca;
+- se il record e data-poor e UK con sponsorship, va comunque a `inspect manually`, non ad `apply`.
+
+## LinkedIn Recommended Jobs Gate
+
+Le email LinkedIn di recommended jobs possono essere usate come fonte
+opportunistica, ma non sono query salvate e non devono contaminare `queryHealth`.
+
+Regola:
+
+- suggerimento con titolo target esplicito -> scoring normale;
+- suggerimento senza titolo target ma con famiglia ruolo target riconoscibile -> scoring normale prudente;
+- suggerimento senza titolo target e senza famiglia ruolo target riconoscibile -> `outOfScope: true`, `exclusionReason: low_signal_public_feed`, `recommendedAction: ignore`;
+- i record esclusi da questo gate non devono comparire nelle sezioni operative del digest.
+
+Regole aggiuntive per il layer narrativo:
+
+- se il record e data-poor ma il titolo e coerente con una narrativa primaria, il sistema puo assegnare una `tentativePrimaryNarrative` a bassa confidenza e mandare a `inspect manually`;
+- se il record e data-poor e non mostra nessuna narrativa primaria leggibile, il titolo non basta per alzare la priorita;
+- per la narrativa AI, in assenza di segnali di produzione o industrializzazione, il record non deve essere classificato come `Applied AI / Document Intelligence in Production`.
+
 Regole operative per `recommendedAction`:
 
 - `apply`: fit e vantaggio sono entrambi forti, i vincoli pratici sono compatibili e il ruolo e abbastanza specifico da meritare lavoro immediato;
@@ -250,6 +318,24 @@ Soglia iniziale per `topMatches`:
 - includere solo record non esclusi con `applicationPriorityScore >= 40`;
 - se il report diventa rumoroso, alzare la soglia a 50 o richiedere almeno `profileFitScore >= 50`;
 - un record con `profileFitScore = 0` non deve entrare in `topMatches` anche se il titolo sembra vicino.
+
+## Alert Quality Metrics
+Le query LinkedIn non vanno valutate solo per volume. L'unita di controllo principale e la query specifica, non il gruppo canonico.
+
+Per ogni query misurare almeno:
+
+- `jobsObserved`
+- `%PrimaryNarrativeFit`: quota di job che entrano in una narrativa primaria
+- `%ManualInspection`: quota di job che finiscono in `inspect manually`
+- `%OutOfNarrativeNoise`: quota di job che non entrano in nessuna narrativa primaria
+- `%OutOfScope`: quota di job esclusi dal gate
+
+Regole operative:
+
+- la lettura primaria e per `singolo alert/query`;
+- aggregazioni per gruppo canonico servono solo come vista secondaria;
+- non prendere decisioni `keep / split / narrow / retire` su un singolo digest rumoroso;
+- osservare una query per `5 cicli` prima di decidere se tenerla, restringerla, splittarla o ritirarla, salvo rumore evidentemente patologico.
 
 ## Variante Italia
 La variante italiana serve quando il sistema legge soprattutto il mercato italiano o fonti Italia-centriche.
