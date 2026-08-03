@@ -41,3 +41,8 @@ This project is indexed by GitNexus as **resume** (6 symbols, 5 relationships, 0
 | Index, status, clean, wiki CLI commands | `.claude/skills/gitnexus/gitnexus-cli/SKILL.md` |
 
 <!-- gitnexus:end -->
+
+## Agent OS e lifecycle delle skill
+
+- Fonte normativa: [RFC-0001 – Principi fondanti della Software Factory](https://github.com/ignazio-ingenito/agent-os/blob/main/rfcs/RFC-0001-principles.md).
+- Le skill riusabili hanno una sola sorgente nel [repository codex-skills](https://github.com/ignazio-ingenito/codex-skills). Nei progetti vanno installate tramite symlink con `scripts/install-project.sh`, senza copiare o modificare manualmente le directory installate.
