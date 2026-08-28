@@ -10,7 +10,7 @@ Questo repository e la source of truth per strategia e decisioni:
 - scoring;
 - criteri di calibrazione.
 
-Il repository `/home/iingenito/projects/personal/n8n-workflows` e invece la source of truth tecnica per:
+Il repository `skunklabs-uk/n8n-workflows` e invece la source of truth tecnica per:
 
 - workflow n8n importabili in JSON;
 - credenziali da collegare nella UI di n8n;

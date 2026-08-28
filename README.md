@@ -57,7 +57,7 @@ Questo repository e la source of truth per la strategia personale di ricerca
 lavoro: profilo, CV, mercato target, query, criteri di ranking e decisioni sulle
 candidature.
 
-Il repository `/home/iingenito/projects/personal/n8n-workflows` resta invece la
+Il repository `skunklabs-uk/n8n-workflows` resta invece la
 source of truth tecnica per workflow n8n importabili nel cluster: JSON dei
 workflow, handoff GitOps, note di import, credenziali da collegare nella UI e
 attivazione manuale.
