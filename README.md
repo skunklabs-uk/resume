@@ -69,6 +69,26 @@ In pratica:
 - i workflow n8n possono implementare o automatizzare specifiche definite qui,
   ma non devono diventare il posto dove ragionare sul posizionamento personale.
 
+## Collegamento seriale al Developer Workspace
+
+Un incarico autorizzato viene eseguito da un consumer seriale in un checkout
+isolato, vincolato a repository e thread, branch, head e prompt.
+
+Per l’adozione documentale di [Homelab #1265](https://github.com/skunklabs-uk/homelab/issues/1265),
+il child prepara un report senza modificare file. Il coordinatore lo verifica
+e ne registra l’accettazione con RETURN. L’applicazione della proposta e il
+merge avvengono separatamente, tramite una normale PR discendente da main;
+lo snapshot senza parent non viene integrato.
+
+L’incarico riguarda questa nota tecnica. CV, profilo, strategia di ricerca
+lavoro, candidature e corpus personali restano fuori scope. Le decisioni
+personali appartengono a questo repository; i workflow n8n eseguibili al
+repository dedicato. La preview HTTP non si applica a questa modifica
+documentale, che non attesta il funzionamento delle automazioni.
+
+Le procedure correnti sono nel [runbook Developer Workspace](https://github.com/skunklabs-uk/developer-workspace/blob/main/docs/WORKSPACE-HANDOFF.md)
+e nel [README del deployment Homelab](https://github.com/skunklabs-uk/homelab/blob/main/gitops/apps/developer-workspace/README.md).
+
 ## Documenti Principali
 
 - `profile/positioning.md`
