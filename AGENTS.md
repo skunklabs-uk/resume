@@ -1,3 +1,7 @@
+## Documentazione funzionale e tecnica
+
+Per la documentazione funzionale o tecnica, consulta la [guida condivisa Diátaxis](https://github.com/skunklabs-uk/codex-skills/blob/main/AGENTS.global.md#functional-and-technical-documentation).
+
 ## Repository intelligence
 
 Use GitNexus when it is available and materially reduces uncertainty about unfamiliar flows or a broad blast radius. Direct source inspection, caller analysis, focused tests, and equivalent tools remain valid evidence; GitNexus is not a universal prerequisite for editing or committing.
