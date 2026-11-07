@@ -1,3 +1,7 @@
+## Functional and technical documentation
+
+For functional or technical documentation, consult the shared [Diátaxis guidance](https://github.com/skunklabs-uk/codex-skills/blob/docs/shared-documentation-guidance/AGENTS.global.md#functional-and-technical-documentation).
+
 ## Repository intelligence
 
 Use GitNexus when it is available and materially reduces uncertainty about unfamiliar flows or a broad blast radius. Direct source inspection, caller analysis, focused tests, and equivalent tools remain valid evidence; GitNexus is not a universal prerequisite for editing or committing.
